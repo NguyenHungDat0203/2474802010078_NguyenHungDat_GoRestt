@@ -1,0 +1,29 @@
+name: GoRest API Monitor
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Chạy tự động mỗi giờ một lần
+  workflow_dispatch: # Cho phép bấm nút chạy thủ công (Manual Trigger)
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Monitor Check (GET users with Response Time < 800ms)
+        run: |
+          newman run 2474802010078_NguyenHungDat_GoRest.postman_collection.json \
+            -e 2474802010078_NguyenHungDat_GoRest_Env.postman_environment.json \
+            --env-var "token=${{ secrets.GOREST_TOKEN }}" \
+            --folder "Positive_Cases"
